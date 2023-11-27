@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   
+    <title>joke clone</title>
+    <style>
+        *{
+          
+            margin: 0;
+            padding: 0;
+           box-sizing: border-box;
+           background: black;
+            border-color: rgb(0, 238, 255);
+            font-size: 1.rem;
+          
+        }  
+        body{
+            
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+          
+          
+        } 
+        .container{
+            color: white;
+            width: 90%;
+            max-width: 500px;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 20px cyan;  
+        
+        }
+        .button .icon img{
+            width: 50px;
+           padding: 8px;
+          border: 2px solid cyan;
+          border-radius: 50px;
+   
+        }
+        .button{
+            display: flex;
+            justify-content: space-around;
+           align-items: center;
+
+        }
+        .heading h1{
+            border: 2px solid cyan;
+            padding: 10px;
+            text-align: center;
+            justify-content: center; 
+            border-radius: 50px;
+        }
+        .button .btn{
+            border-radius: 10px;
+            color: white;
+            padding: 10px;
+        }
+        .container .jokes p{
+            font-size: 2rem;
+            padding: 10px;
+            margin: 10px 0;
+            color: white;
+            text-align: center;
+        }
+        .button .btn:hover{
+            box-shadow: 0 5px 10px cyan;   
+            cursor: pointer; 
+            background: rgb(122, 165, 165);
+            color: rgb(0, 0, 0);
+            font-weight: bolder;
+        }
+        .button .icon img:hover{
+            box-shadow: 0 5px 10px cyan;   
+            cursor: pointer; 
+            background: rgb(97, 194, 194);
+            
+            
+        }
+       
+        
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="heading">
+            <h1>jokes</h1>
+        </div>
+        <div class="jokes jokes">
+            <p id="joke-data">click on joke generate button</p>
+        </div>
+        <div class="button">
+            <div class="icon">
+              
+                <img src="sound.png" id="sound" alt="">
+                <img src="copy.png"  id="copy"alt="">
+                <img src="whatsapp.png"  id="whatsapp"alt="">
+            </div>
+            <button class="btn" id="generated-btn">joke generated</button>
+            <button class="btn" id="stop">stop</button>
+            
+        </div>
+
+    </div>
+    <script>
+        let jokeText =document.getElementById("joke-data")
+        let soundBtn=document.getElementById("sound")
+        let copyBtn =document.getElementById("copy")
+        let whatsappBtn=document.getElementById("whatsapp")
+        let generateBtn=document.getElementById("generated-btn")
+        let stopBtn=document.getElementById("stop")
+        let url="https://icanhazdadjoke.com/";
+
+        generateBtn.addEventListener("click",randomjoke)
+        function randomjoke(){
+            jokeText.textContent="loading..."
+            if(navigator.onLine){
+                const response =fetch(url,{
+                    headers:{
+                        'accept':'application/json'
+                    }
+                })
+                .then(response=>{
+                    return response.json()
+                })
+                .then(data=>{
+                    jokeText.innerHTML= data.joke
+                })
+                .catch(Error=>{
+                    jokeText.innerHTML="something went worng"
+                })
+            
+            }
+            else{
+                jokeText.innerHTML="please check your internet connection"
+            }
+        }
+        soundBtn.addEventListener("click",speech)
+        function speech(){
+            let utteranc= new SpeechSynthesisUtterance(`${jokeText.textContent}`)
+            speechSynthesis.speak(utteranc)
+        }
+        stopBtn.addEventListener("click",()=>{
+            speechSynthesis.cancel()
+        })
+        copyBtn.addEventListener("click",()=>{
+            navigator.clipboard.writeText(jokeText.innerText)
+        })
+        whatsappBtn.addEventListener("click",()=>{
+            let url=`https://wa.me/?text=${jokeText.innerText}`
+            open(url,"_blank")
+            console.log(url)
+        })
+    </script>
+</body>
+</html>
